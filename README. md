@@ -1,10 +1,27 @@
-# Create Virtual Environment
+Simple Flight Data Service
 
-`$ python -m venv venv`
-
-# Activate virtual environment (command for Unix OS)
-`$ source/
-`$ pip install -r requirements.txt`
+> All CLI commands are for Unix OS
 
 
+# Clone the repo and go into directory
 
+`git clone https://github.com/nicky-eng/GD_assignment.git`
+`cd GD_assignment`
+
+# Create Virtual Environment and activate
+
+> Python version for venv should be 3.6 or higher.
+
+`python -m venv venv`
+`source venv/bin/activate`
+`pip install -r requirements.txt`
+
+# Testing endpoints
+
+Run the following command:
+`python test_endpoints.py`
+
+
+# Launching the API in the development server
+
+`python app.py`

@@ -159,7 +159,7 @@ def get_pivot_report_county():
     response_data = BytesIO(report.to_csv().encode())
 
     return send_file(response_data, mimetype='text/csv',
-                        download_name='pivot_report.csv')
+                        download_name='report.csv')
 
 
 @app.route('/pivot_report_state')
