@@ -1,0 +1,5 @@
+Flask==2.2.2
+pyarrow==10.0.1
+pandas==1.5.2
+pandasql==0.7.3
+
