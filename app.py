@@ -11,16 +11,18 @@ from pandasql import sqldf
 
 app = Flask(__name__)
 
+# Variables to use when not running tests
 data_files_path = './faa_data'
-
+port = 5000
 debug = True
 
 
-# This to load the correct data when running the python test script.
+# This is to load the correct data when running the python test script.
 if len(sys.argv) > 1:
     if sys.argv[1] == 'load_test_data':
         data_files_path = './test_data'
         debug = False
+        port = 5045 # To avoid collision with running app
 
 data_files = glob.glob(os.path.join(data_files_path,'*.parquet'))
 
@@ -85,8 +87,7 @@ def get_active_manufacturer_model(manufacturer, model):
     model and manufacturer. For each aircraft it returns: manufacturer, model,
     number of seats, serial number, registrant name and registrant county.
     """
-    model_data = {}
-
+   
     # aircraft_model_code is the link
     df = data['aircraft_models.parquet']
 
@@ -101,10 +102,6 @@ def get_active_manufacturer_model(manufacturer, model):
 
     aircraft_model_code = aircraft_model['aircraft_model_code']
 
-    model_data['manufacturer'] = aircraft_model['manufacturer']
-    model_data['model'] = aircraft_model['model']
-    model_data['number_of_seats'] = str(aircraft_model['seats'])
-
     df2 = data['aircraft.parquet']
 
     active_aircraft = df2.loc[
@@ -114,6 +111,13 @@ def get_active_manufacturer_model(manufacturer, model):
     response_data = []
 
     for i in range(len(active_aircraft)):
+        model_data = {}
+
+        # This data is the same for all
+        model_data['manufacturer'] = aircraft_model['manufacturer']
+        model_data['model'] = aircraft_model['model']
+        model_data['number_of_seats'] = str(aircraft_model['seats'])
+
         aircraft = active_aircraft.iloc[i]
         model_data['serial_number'] = aircraft['aircraft_serial']
         model_data['registrant_name'] = aircraft['name']
@@ -141,7 +145,7 @@ def get_report():
     response_data = BytesIO(report.to_csv().encode())
 
     return send_file(response_data, mimetype='text/csv',
-                        download_name='pivot_report.csv')
+                        download_name='report.csv')
 
 
 @app.route('/pivot_report_county')
@@ -192,4 +196,4 @@ def sql(query):
 
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(host='0.0.0.0', port=port, debug=debug)
